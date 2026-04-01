@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "कॉर्पोरेट AI एजेंट"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "tasks": "कार्य",
+    "calls": "कॉल",
+    "employees": "कर्मचारी",
+    "messages": "संदेश",
+    "meetings": "मीटिंग",
+    "reports": "रिपोर्ट",
+    "aiChat": "AI चैट",
+    "hr": "मानव संसाधन",
+    "analytics": "विश्लेषण",
+    "logout": "लॉगआउट"
+  },
+  "dashboard": {
+    "welcome": "वापस स्वागत है",
+    "totalEmployees": "कुल कर्मचारी",
+    "myTasks": "मेरे कार्य",
+    "pendingMessages": "लंबित संदेश",
+    "meetingsToday": "आज की मीटिंग"
+  },
+  "ai": {
+    "title": "AI सहायक",
+    "subtitle": "Google Gemini द्वारा संचालित (मुफ्त)",
+    "placeholder": "संदेश टाइप करें...",
+    "send": "भेजें",
+    "newChat": "नई चैट",
+    "history": "इतिहास",
+    "draftEmail": "ईमेल ड्राफ्ट",
+    "thinking": "सोच रहा हूँ..."
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "submit": "जमा करें",
+    "search": "खोजें"
+  }
+}

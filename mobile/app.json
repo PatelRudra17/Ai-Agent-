@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Corporate AI Agent",
+    "slug": "corporate-ai-agent",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#2563eb"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.corporateai.agent"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2563eb"
+      },
+      "package": "com.corporateai.agent"
+    },
+    "plugins": [
+      "expo-local-authentication",
+      "expo-notifications",
+      "expo-asset",
+      "expo-font"
+    ]
+  }
+}

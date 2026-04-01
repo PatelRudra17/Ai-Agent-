@@ -1,0 +1,43 @@
+{
+  "app": {
+    "title": "Corporate AI Agent"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "calls": "Calls",
+    "employees": "Employees",
+    "messages": "Messages",
+    "meetings": "Meetings",
+    "reports": "Reports",
+    "aiChat": "AI Chat",
+    "hr": "HR",
+    "analytics": "Analytics",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "totalEmployees": "Total Employees",
+    "myTasks": "My Tasks",
+    "pendingMessages": "Pending Messages",
+    "meetingsToday": "Meetings Today"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "subtitle": "Powered by Google Gemini (Free)",
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "newChat": "New Chat",
+    "history": "History",
+    "draftEmail": "Draft Email",
+    "thinking": "Thinking..."
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "submit": "Submit",
+    "search": "Search"
+  }
+}
