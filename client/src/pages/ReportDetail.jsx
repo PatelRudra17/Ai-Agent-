@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import Breadcrumbs from '../components/ui/Breadcrumbs';
 
 export default function ReportDetail() {
   const { id } = useParams();
@@ -46,10 +47,7 @@ export default function ReportDetail() {
   return (
     <Layout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
-        {/* Back */}
-        <button onClick={() => navigate('/reports')} className="text-sm mb-6 flex items-center gap-2 transition-colors hover:text-white" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <span>&larr;</span> Back to Reports
-        </button>
+        <Breadcrumbs items={[{ label: 'Dashboard', path: '/dashboard' }, { label: 'Reports', path: '/reports' }, { label: `Report — ${new Date(report.date).toLocaleDateString()}` }]} />
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

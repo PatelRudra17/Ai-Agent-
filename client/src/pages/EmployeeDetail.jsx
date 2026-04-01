@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import GlowButton from '../components/ui/GlowButton';
+import Breadcrumbs from '../components/ui/Breadcrumbs';
 
 const TABS = ['Tasks', 'Attendance', 'Leaves', 'Performance'];
 const roleBadgeColors = { admin: '#ef4444', manager: '#6366f1', employee: '#8b5cf6' };
@@ -80,10 +81,7 @@ export default function EmployeeDetail() {
   return (
     <Layout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto">
-        {/* Back */}
-        <button onClick={() => navigate('/employees')} className="text-sm mb-6 flex items-center gap-2 transition-colors hover:text-white" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <span>&larr;</span> Back to Employees
-        </button>
+        <Breadcrumbs items={[{ label: 'Dashboard', path: '/dashboard' }, { label: 'Employees', path: '/employees' }, { label: employee.name }]} />
 
         {/* Profile Card */}
         <div className="rounded-2xl p-6 mb-6 flex items-center gap-6" style={cardStyle}>

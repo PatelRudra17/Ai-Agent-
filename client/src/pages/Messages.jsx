@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import ModeToggle from '../components/ui/ModeToggle';
+import Skeleton from '../components/ui/Skeleton';
 
 export default function Messages() {
   const [messages, setMessages] = useState([]);
@@ -252,9 +253,9 @@ export default function Messages() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</td></tr>
+                <tr><td colSpan={6} className="px-6 py-4"><Skeleton className="h-10 w-full mb-2" count={3} /></td></tr>
               ) : messages.length === 0 ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>No messages scheduled</td></tr>
+                <tr><td colSpan={6} className="px-6 py-12 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>No messages scheduled yet. Click "+ Schedule Message" to get started.</td></tr>
               ) : (
                 messages.map((msg) => {
                   const channelColor = '#6366f1';

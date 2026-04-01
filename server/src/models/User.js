@@ -56,6 +56,8 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    resetOTP: { type: String, select: false },
+    resetOTPExpires: { type: Date, select: false },
     aiPreferences: {
       masterMode: {
         type: String,

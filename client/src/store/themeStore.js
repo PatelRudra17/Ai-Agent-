@@ -1,19 +1,18 @@
 import { create } from 'zustand';
 
 const useThemeStore = create((set) => ({
-  dark: localStorage.getItem('theme') === 'dark',
+  dark: localStorage.getItem('theme') !== 'light',
   toggle: () =>
     set((state) => {
       const next = !state.dark;
       localStorage.setItem('theme', next ? 'dark' : 'light');
-      document.documentElement.classList.toggle('dark', next);
+      document.documentElement.setAttribute('data-theme', next ? 'dark' : 'light');
       return { dark: next };
     }),
 }));
 
 // Init on load
-if (localStorage.getItem('theme') === 'dark') {
-  document.documentElement.classList.add('dark');
-}
+const saved = localStorage.getItem('theme');
+document.documentElement.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
 
 export default useThemeStore;

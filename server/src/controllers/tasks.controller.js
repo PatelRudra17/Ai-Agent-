@@ -225,6 +225,27 @@ exports.completeTask = async (req, res) => {
   }
 };
 
+// PATCH /api/tasks/:id/status — Update status (for drag-and-drop)
+exports.updateStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const valid = ['pending', 'inprogress', 'done', 'overdue', 'cancelled'];
+    if (!valid.includes(status)) return res.status(400).json({ message: 'Invalid status' });
+
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
+
+    task.status = status;
+    if (status === 'done') task.completedAt = new Date();
+    await task.save();
+
+    emitStatusUpdate('task_updated', { action: 'status_changed', task });
+    res.json({ message: 'Status updated', task });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 // POST /api/tasks/:id/comment
 exports.addComment = async (req, res) => {
   try {

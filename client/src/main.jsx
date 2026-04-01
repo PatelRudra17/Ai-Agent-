@@ -16,11 +16,9 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
-// Unregister old service workers to prevent stale cache
+// Register service worker for PWA
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (const registration of registrations) {
-      registration.unregister();
-    }
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
 }

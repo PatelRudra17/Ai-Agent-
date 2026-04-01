@@ -5,6 +5,8 @@ import api from '../services/api';
 import useAuthStore from '../store/authStore';
 import Layout from '../components/Layout';
 import ModeToggle from '../components/ui/ModeToggle';
+import EmptyState from '../components/ui/EmptyState';
+import Skeleton from '../components/ui/Skeleton';
 
 export default function Meetings() {
   const { user } = useAuthStore();
@@ -185,9 +187,17 @@ export default function Meetings() {
         )}
 
         {loading ? (
-          <p className="text-center py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</p>
+          <div className="space-y-4">
+            {[1,2,3].map((i) => <Skeleton key={i} className="h-28 w-full" />)}
+          </div>
         ) : meetings.length === 0 ? (
-          <div className="rounded-2xl p-12 text-center" style={{ ...cardStyle, color: 'rgba(255,255,255,0.3)' }}>No meetings yet</div>
+          <EmptyState
+            icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
+            title="No meetings scheduled"
+            description={isManager ? "Schedule a meeting to get started" : "No meetings scheduled for you yet"}
+            actionLabel={isManager ? "Schedule Meeting" : undefined}
+            onAction={isManager ? () => setShowForm(true) : undefined}
+          />
         ) : (
           <div className="space-y-4">
             {meetings.map((m) => {

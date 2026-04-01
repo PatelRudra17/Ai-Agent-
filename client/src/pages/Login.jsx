@@ -99,6 +99,7 @@ export default function Login() {
                 <label className="block text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>Password</label>
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required autoComplete="off"
                   className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-white/15 outline-none focus:ring-2 focus:ring-violet-500/30" style={inputStyle} />
+                <Link to="/forgot-password" className="block text-right text-[10px] mt-1.5 text-violet-400/60 hover:text-violet-400 transition-colors">Forgot password?</Link>
               </div>
               <button type="submit" disabled={isLoading || !role}
                 className="w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 mt-1"

@@ -8,6 +8,9 @@ import Layout from '../components/Layout';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
 import ExportButton from '../components/ui/ExportButton';
 import ModeToggle from '../components/ui/ModeToggle';
+import EmptyState from '../components/ui/EmptyState';
+import Skeleton from '../components/ui/Skeleton';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 const STATUS_COLS = [
   { key: 'pending', label: 'Pending', gradient: 'linear-gradient(135deg, #f59e0b, #d97706)', glow: 'rgba(245,158,11,0.15)' },
@@ -60,6 +63,23 @@ export default function Tasks() {
   };
 
   const tasksByStatus = (s) => tasks.filter((t) => t.status === s);
+
+  const handleDragEnd = async (result) => {
+    if (!result.destination || !isManager) return;
+    const { draggableId, destination } = result;
+    const newStatus = destination.droppableId;
+    const task = tasks.find((t) => t._id === draggableId);
+    if (!task || task.status === newStatus) return;
+    // Optimistic update
+    setTasks((prev) => prev.map((t) => t._id === draggableId ? { ...t, status: newStatus } : t));
+    try {
+      await api.patch(`/tasks/${draggableId}/status`, { status: newStatus });
+      fetchStats();
+    } catch {
+      toast.error('Failed to update status');
+      fetchTasks();
+    }
+  };
   const inputStyle = { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: '#fff' };
   const cardStyle = { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' };
 
@@ -144,36 +164,66 @@ export default function Tasks() {
       </AnimatePresence>
 
       {/* Kanban */}
-      {loading ? <p className="text-center py-20" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</p> : (
+      {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {STATUS_COLS.map((col) => (
-            <motion.div key={col.key} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl p-4 min-h-[200px]" style={{ background: col.glow, border: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 rounded-full" style={{ background: col.gradient }} />
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-white/60">{col.label} ({tasksByStatus(col.key).length})</h3>
-              </div>
-              <div className="space-y-2">
-                {tasksByStatus(col.key).map((task, i) => (
-                  <motion.div key={task._id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
-                    onClick={() => navigate(`/tasks/${task._id}`)}
-                    className="rounded-xl p-3 transition-all hover:scale-[1.02] cursor-pointer" style={cardStyle}>
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-sm font-medium text-white/90">{task.title}</h4>
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0" style={{ color: priorityColors[task.priority], background: priorityColors[task.priority] + '15' }}>{task.priority}</span>
-                    </div>
-                    {task.description && <p className="text-xs mt-1 line-clamp-2" style={{ color: 'rgba(255,255,255,0.3)' }}>{task.description}</p>}
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>{isManager ? task.assignedTo?.name : ''} {task.dueDate ? `Due: ${new Date(task.dueDate).toLocaleDateString()}` : ''}</span>
-                      {task.status === 'pending' && <button onClick={() => handleAction(task._id, 'start')} className="text-[10px] px-2 py-0.5 rounded-lg font-semibold" style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8' }}>Start</button>}
-                      {task.status === 'inprogress' && <button onClick={() => handleAction(task._id, 'complete')} className="text-[10px] px-2 py-0.5 rounded-lg font-semibold" style={{ background: 'rgba(16,185,129,0.15)', color: '#34d399' }}>Done</button>}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+          {[1,2,3,4].map((i) => (
+            <div key={i} className="rounded-2xl p-4 min-h-[200px]" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
+              <Skeleton className="h-4 w-24 mb-4" />
+              <Skeleton className="h-20 w-full mb-2" count={3} />
+            </div>
           ))}
         </div>
+      ) : tasks.length === 0 ? (
+        <EmptyState
+          icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>}
+          title="No tasks yet"
+          description={isManager ? "Create your first task to get started" : "No tasks assigned to you yet"}
+          actionLabel={isManager ? "Create Task" : undefined}
+          onAction={isManager ? () => setShowForm(true) : undefined}
+        />
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {STATUS_COLS.map((col) => (
+            <Droppable key={col.key} droppableId={col.key} isDropDisabled={!isManager}>
+              {(provided, snapshot) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}
+                className="rounded-2xl p-4 min-h-[200px] transition-colors"
+                style={{ background: snapshot.isDraggingOver ? col.glow.replace('0.15', '0.25') : col.glow, border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-2 h-2 rounded-full" style={{ background: col.gradient }} />
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-white/60">{col.label} ({tasksByStatus(col.key).length})</h3>
+                </div>
+                <div className="space-y-2">
+                  {tasksByStatus(col.key).map((task, i) => (
+                    <Draggable key={task._id} draggableId={task._id} index={i} isDragDisabled={!isManager}>
+                      {(dragProvided, dragSnapshot) => (
+                      <div ref={dragProvided.innerRef} {...dragProvided.draggableProps} {...dragProvided.dragHandleProps}
+                        onClick={() => navigate(`/tasks/${task._id}`)}
+                        className="rounded-xl p-3 transition-all hover:scale-[1.02] cursor-pointer"
+                        style={{ ...cardStyle, ...(dragSnapshot.isDragging ? { boxShadow: '0 8px 25px rgba(99,102,241,0.3)', transform: 'rotate(2deg)' } : {}), ...dragProvided.draggableProps.style }}>
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="text-sm font-medium text-white/90">{task.title}</h4>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0" style={{ color: priorityColors[task.priority], background: priorityColors[task.priority] + '15' }}>{task.priority}</span>
+                        </div>
+                        {task.description && <p className="text-xs mt-1 line-clamp-2" style={{ color: 'rgba(255,255,255,0.3)' }}>{task.description}</p>}
+                        <div className="mt-2 flex items-center justify-between">
+                          <span className="text-[10px]" style={{ color: 'rgba(255,255,255,0.25)' }}>{isManager ? task.assignedTo?.name : ''} {task.dueDate ? `Due: ${new Date(task.dueDate).toLocaleDateString()}` : ''}</span>
+                          {task.status === 'pending' && <button onClick={(e) => { e.stopPropagation(); handleAction(task._id, 'start'); }} className="text-[10px] px-2 py-0.5 rounded-lg font-semibold" style={{ background: 'rgba(99,102,241,0.15)', color: '#818cf8' }}>Start</button>}
+                          {task.status === 'inprogress' && <button onClick={(e) => { e.stopPropagation(); handleAction(task._id, 'complete'); }} className="text-[10px] px-2 py-0.5 rounded-lg font-semibold" style={{ background: 'rgba(16,185,129,0.15)', color: '#34d399' }}>Done</button>}
+                        </div>
+                      </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              </div>
+              )}
+            </Droppable>
+          ))}
+        </div>
+        </DragDropContext>
       )}
     </Layout>
   );

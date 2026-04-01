@@ -103,11 +103,11 @@ After running `npm run seed`:
 
 | Role | Email | Password |
 |------|-------|----------|
-| Admin | admin@company.com | Admin@123 |
-| Manager | manager@company.com | Manager@123 |
-| Employee 1 | emp1@company.com | Employee@123 |
-| Employee 2 | emp2@company.com | Employee@123 |
-| Employee 3 | emp3@company.com | Employee@123 |
+| Admin | admin@company.com | admin123 |
+| Manager | manager@company.com | manager123 |
+| Employee | priya@company.com | employee123 |
+| Employee | amit@company.com | employee123 |
+| Employee | neha@company.com | employee123 |
 
 ## Project Structure
 

@@ -6,6 +6,7 @@ import api from '../services/api';
 import useAuthStore from '../store/authStore';
 import Layout from '../components/Layout';
 import AnimatedCounter from '../components/ui/AnimatedCounter';
+import Skeleton from '../components/ui/Skeleton';
 
 export default function Reports() {
   const { user } = useAuthStore();
@@ -138,9 +139,9 @@ export default function Reports() {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} className="px-6 py-8 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</td></tr>
+                  <tr><td colSpan={6} className="px-6 py-4"><Skeleton className="h-10 w-full mb-2" count={3} /></td></tr>
                 ) : reports.length === 0 ? (
-                  <tr><td colSpan={6} className="px-6 py-8 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>No reports yet</td></tr>
+                  <tr><td colSpan={6} className="px-6 py-12 text-center" style={{ color: 'rgba(255,255,255,0.3)' }}>No reports generated yet. Click "Generate Today's Report" to create one.</td></tr>
                 ) : (
                   reports.map((r) => {
                     const typeBadgeColor = r.type === 'weekly' ? '#8b5cf6' : '#6366f1';

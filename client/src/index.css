@@ -2,13 +2,35 @@
 
 * { box-sizing: border-box; }
 
+:root {
+  --bg-primary: #0f0f1a;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.06);
+  --text-primary: #e2e8f0;
+  --text-secondary: rgba(255,255,255,0.4);
+  --header-bg: rgba(15,15,30,0.8);
+  --sidebar-bg: rgba(10,10,25,0.95);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f1f5f9;
+  --bg-card: rgba(255,255,255,0.9);
+  --bg-card-hover: rgba(255,255,255,1);
+  --border: rgba(0,0,0,0.08);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --header-bg: rgba(255,255,255,0.9);
+  --sidebar-bg: rgba(255,255,255,0.95);
+}
+
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0f0f1a;
-  color: #e2e8f0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   overflow-x: hidden;
 }
 

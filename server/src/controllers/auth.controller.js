@@ -278,3 +278,58 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// POST /api/auth/forgot-password
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ message: 'No account found with that email' });
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetOTP = otp;
+    user.resetOTPExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+    await user.save();
+
+    // Try sending email
+    try {
+      const { sendNotificationEmail } = require('../services/email.service');
+      await sendNotificationEmail(user.email, 'Password Reset OTP', `Your OTP is: ${otp}. Valid for 15 minutes.`);
+    } catch {}
+
+    // In dev mode, return OTP in response for testing
+    const response = { message: 'OTP sent to your email' };
+    if (process.env.NODE_ENV === 'development') response.otp = otp;
+
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// POST /api/auth/reset-password
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) return res.status(400).json({ message: 'Email, OTP, and new password are required' });
+    if (newPassword.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' });
+
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+resetOTP +resetOTPExpires');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    if (!user.resetOTP || user.resetOTP !== otp) return res.status(400).json({ message: 'Invalid OTP' });
+    if (user.resetOTPExpires < new Date()) return res.status(400).json({ message: 'OTP has expired. Request a new one.' });
+
+    user.password = newPassword;
+    user.resetOTP = undefined;
+    user.resetOTPExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password reset successful. You can now login with your new password.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

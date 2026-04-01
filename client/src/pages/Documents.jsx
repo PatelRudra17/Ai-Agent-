@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import EmptyState from '../components/ui/EmptyState';
+import Skeleton from '../components/ui/Skeleton';
 
 export default function Documents() {
   const [docs, setDocs] = useState([]);
@@ -99,11 +101,15 @@ export default function Documents() {
         </div>
 
         {loading ? (
-          <p className="text-center py-12" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</p>
-        ) : docs.length === 0 ? (
-          <div className="rounded-2xl p-12 text-center" style={{ ...cardStyle, color: 'rgba(255,255,255,0.3)' }}>
-            No documents uploaded yet. Upload a PDF or DOCX to get started.
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1,2,3].map((i) => <Skeleton key={i} className="h-32 w-full" />)}
           </div>
+        ) : docs.length === 0 ? (
+          <EmptyState
+            icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>}
+            title="No documents uploaded"
+            description="Upload a PDF, DOCX, or CSV to get started with AI Q&A"
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {docs.map((doc) => (

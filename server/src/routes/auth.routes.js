@@ -28,6 +28,8 @@ router.post(
   authController.login
 );
 
+router.post('/forgot-password', loginLimiter, authController.forgotPassword);
+router.post('/reset-password', loginLimiter, authController.resetPassword);
 router.post('/refresh', authController.refresh);
 router.post('/logout', authMiddleware, authController.logout);
 router.post('/change-password', authMiddleware, passwordLimiter, authController.changePassword);

@@ -69,6 +69,7 @@ app.use('/api/analytics', require('./routes/analytics.routes'));
 app.use('/api/search', require('./routes/search.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 app.use('/api/notifications', require('./routes/notification.routes'));
+app.use('/api/chat', require('./routes/chat.routes'));
 
 // 404
 app.use((req, res) => {

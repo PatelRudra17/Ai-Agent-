@@ -7,6 +7,7 @@ import useAuthStore from '../store/authStore';
 import Layout from '../components/Layout';
 import GlassCard from '../components/ui/GlassCard';
 import GlowButton from '../components/ui/GlowButton';
+import Breadcrumbs from '../components/ui/Breadcrumbs';
 
 const priorityColors = { critical: '#ef4444', high: '#f97316', medium: '#6366f1', low: '#6b7280' };
 const statusColors = { pending: '#f59e0b', inprogress: '#6366f1', done: '#10b981', overdue: '#ef4444', cancelled: '#6b7280' };
@@ -89,10 +90,7 @@ export default function TaskDetail() {
   return (
     <Layout>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl mx-auto">
-        {/* Back Button */}
-        <button onClick={() => navigate('/tasks')} className="text-sm mb-6 flex items-center gap-2 transition-colors hover:text-white" style={{ color: 'rgba(255,255,255,0.4)' }}>
-          <span>&larr;</span> Back to Tasks
-        </button>
+        <Breadcrumbs items={[{ label: 'Dashboard', path: '/dashboard' }, { label: 'Tasks', path: '/tasks' }, { label: task.title }]} />
 
         {/* Header */}
         <div className="flex items-start justify-between mb-6 gap-4">

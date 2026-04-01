@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import Skeleton from '../components/ui/Skeleton';
 
 const typeColors = {
   task_assigned: '#6366f1', task_completed: '#22c55e', task_overdue: '#ef4444',
@@ -146,7 +147,9 @@ export default function Notifications() {
         </div>
 
         {loading ? (
-          <p className="text-center py-16" style={{ color: 'rgba(255,255,255,0.3)' }}>Loading...</p>
+          <div className="space-y-3">
+            <Skeleton className="h-16 w-full" count={5} />
+          </div>
         ) : filteredNotifs.length === 0 ? (
           <div className="rounded-2xl p-16 text-center" style={cardStyle}>
             <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: 'rgba(139,92,246,0.1)' }}>

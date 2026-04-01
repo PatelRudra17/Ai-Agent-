@@ -60,6 +60,21 @@ const initSocket = (server) => {
       io.to(targetUserId).emit('call:ended');
     });
 
+    // ===== Team Chat =====
+
+    socket.on('chat:message', ({ roomId, message }) => {
+      // Broadcast to all users in the room (by room participants)
+      socket.to(roomId).emit('chat:message', { roomId, message });
+    });
+
+    socket.on('chat:typing', ({ roomId, userName }) => {
+      socket.to(roomId).emit('chat:typing', { roomId, userName });
+    });
+
+    socket.on('chat:join-room', (roomId) => {
+      socket.join(roomId);
+    });
+
     // ===== Disconnect =====
 
     socket.on('disconnect', () => {

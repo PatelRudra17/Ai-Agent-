@@ -1,6 +1,15 @@
 const nodemailer = require('nodemailer');
 
 let transporter;
+const isConfigured = () => {
+  const user = process.env.GMAIL_USER || '';
+  const pass = process.env.GMAIL_APP_PASSWORD || '';
+  return user && !user.includes('your') && pass && !pass.includes('xxxx');
+};
+
+if (!isConfigured()) {
+  console.log('Email service disabled (Gmail not configured)');
+}
 
 const initTransporter = () => {
   if (transporter) return transporter;
@@ -17,6 +26,11 @@ const initTransporter = () => {
 };
 
 const sendEmail = async ({ to, subject, text, html }) => {
+  if (!isConfigured()) {
+    console.log(`[Email Skipped] To: ${to} | Subject: ${subject}`);
+    return { success: false, reason: 'email_not_configured' };
+  }
+
   const t = initTransporter();
 
   const info = await t.sendMail({

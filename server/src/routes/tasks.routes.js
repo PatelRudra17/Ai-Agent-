@@ -23,6 +23,7 @@ router.get('/export', roleGuard('admin', 'manager'), tasksController.exportTasks
 router.get('/:id', tasksController.getTaskById);
 router.patch('/:id/start', tasksController.startTask);
 router.patch('/:id/complete', tasksController.completeTask);
+router.patch('/:id/status', roleGuard('admin', 'manager'), tasksController.updateStatus);
 router.post('/:id/comment', tasksController.addComment);
 
 module.exports = router;
