@@ -269,6 +269,10 @@ exports.getMorningBriefing = async (req, res) => {
 
     res.json({ briefing, raw: { overdueTasks: overdueData.length, unassigned: unassigned.length, meetings: meetings.length, pendingLeaves, teamCapacity, weeklyRate, lastWeekRate } });
   } catch (error) {
-    res.status(500).json({ message: 'AI briefing failed', error: error.message });
+    const isQuota = error.message?.includes('429') || error.message?.includes('quota');
+    res.status(isQuota ? 429 : 500).json({
+      message: isQuota ? 'AI rate limit reached. Please wait a minute and try again.' : 'AI briefing failed',
+      error: error.message,
+    });
   }
 };

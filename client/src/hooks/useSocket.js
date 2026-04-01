@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore';
 import useNotificationStore from '../store/notificationStore';
 import toast from 'react-hot-toast';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4000';
 
 export default function useSocket() {
   const socketRef = useRef(null);

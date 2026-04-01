@@ -48,7 +48,7 @@ export default function AIChat() {
   const messagesEnd = useRef(null);
 
   useEffect(() => {
-    socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000');
+    socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:4000');
     socket.on('connect', () => { if (user?.id || user?._id) socket.emit('join', user.id || user._id); });
     socket.on('ai_stream', ({ chunk }) => setStreaming((p) => p + chunk));
     socket.on('ai_stream_end', () => setStreaming(''));

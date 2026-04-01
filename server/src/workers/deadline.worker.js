@@ -64,15 +64,16 @@ const startDeadlineWorker = (redisConnection) => {
       if (useAI) {
         // AI Mode: analyze context before deciding
         console.log('AI Mode: Analyzing escalation context...');
+        const assignee = task.assignedTo;
         try {
           const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-          const attendance = await Attendance.findOne({ userId: employee._id, date: todayStart });
-          const pendingCount = await Task.countDocuments({ assignedTo: employee._id, status: { $in: ['pending', 'inprogress'] } });
+          const attendance = await Attendance.findOne({ userId: assignee._id, date: todayStart });
+          const pendingCount = await Task.countDocuments({ assignedTo: assignee._id, status: { $in: ['pending', 'inprogress'] } });
           const teamOnLeave = await Attendance.countDocuments({ date: todayStart, status: 'leave' });
 
           const decision = await analyzeEscalation(
             { title: task.title, priority: task.priority, dueDate: task.dueDate?.toISOString(), escalationLevel: task.escalationLevel },
-            { name: employee.name },
+            { name: assignee.name },
             {
               overdueHours: overdueHours.toFixed(1),
               isActiveToday: !!attendance?.clockIn,

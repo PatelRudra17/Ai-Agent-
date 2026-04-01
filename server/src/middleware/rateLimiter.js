@@ -9,19 +9,19 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Login: strict — 5 attempts per 15 minutes per IP
+// Login: strict per IP (relaxed in development)
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: process.env.NODE_ENV === 'development' ? 50 : 5,
   message: { message: 'Too many login attempts. Please try again after 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Register: 3 per hour per IP
+// Register: per hour per IP (relaxed in development)
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 3,
+  max: process.env.NODE_ENV === 'development' ? 50 : 3,
   message: { message: 'Too many registration attempts. Please try again after 1 hour.' },
   standardHeaders: true,
   legacyHeaders: false,

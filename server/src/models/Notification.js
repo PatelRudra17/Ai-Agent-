@@ -10,10 +10,12 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: [
-        'task_assigned', 'task_completed', 'task_overdue',
-        'leave_approved', 'leave_rejected', 'leave_applied',
-        'meeting_reminder', 'meeting_created',
-        'message_received',
+        'task_assigned', 'task_completed', 'task_overdue', 'next_task',
+        'leave_approved', 'leave_rejected', 'leave_applied', 'leave_request',
+        'meeting_reminder', 'meeting_created', 'meeting_invite', 'meeting_rescheduled', 'meeting_cancelled',
+        'message_received', 'scheduled_message',
+        'call_reminder',
+        'escalation', 'eod_reminder', 'sms_notification',
         'system_alert', 'role_changed',
       ],
       required: true,

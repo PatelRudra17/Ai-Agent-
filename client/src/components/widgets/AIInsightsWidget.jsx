@@ -54,13 +54,15 @@ export default function AIInsightsWidget() {
   }, []);
 
   // AI mode: morning briefing
+  const [error, setError] = useState('');
   const fetchBriefing = async () => {
-    setLoading(true);
+    setLoading(true); setError('');
     try {
       const { data } = await api.get('/analytics/morning-briefing');
       setBriefing(data.briefing);
-    } catch {
+    } catch (err) {
       setBriefing(null);
+      setError(err.response?.data?.message || 'Failed to load briefing. Try again.');
     }
     setLoading(false);
   };
@@ -162,8 +164,17 @@ export default function AIInsightsWidget() {
 
       {mode === 'ai' && !loading && !briefing && (
         <div className="text-center py-4">
-          <p className="text-xs text-white/30">Click to load AI briefing</p>
-          <button onClick={fetchBriefing} className="text-xs text-purple-400 mt-2">Load Briefing</button>
+          {error ? (
+            <>
+              <p className="text-xs text-red-400/80 mb-2">{error}</p>
+              <button onClick={fetchBriefing} className="text-xs text-purple-400">Retry</button>
+            </>
+          ) : (
+            <>
+              <p className="text-xs text-white/30">Click to load AI briefing</p>
+              <button onClick={fetchBriefing} className="text-xs text-purple-400 mt-2">Load Briefing</button>
+            </>
+          )}
         </div>
       )}
     </div>

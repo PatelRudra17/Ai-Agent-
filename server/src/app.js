@@ -81,10 +81,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message || 'Internal server error' });
 });
 
+// Cron jobs
+const { startDailyReportCron } = require('./cron/dailyReport.cron');
+const { startWeeklySummaryCron } = require('./cron/weeklySummary.cron');
+const { startSalaryCron } = require('./cron/salaryCron');
+
 // Start
 const PORT = process.env.PORT || 4000;
 const start = async () => {
   await connectDB();
+  startDailyReportCron();
+  startWeeklySummaryCron();
+  startSalaryCron();
   server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 };
 start();
